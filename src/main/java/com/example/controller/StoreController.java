@@ -21,4 +21,11 @@ public class StoreController {
         List<ProductDTO> list = productService.findAll();
         return list;
     }
+
+    @PostMapping
+    public void add(@RequestBody ProductDTO productDTO) {
+        productService.insert(productDTO);
+    }
+
+
 }

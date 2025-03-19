@@ -23,6 +23,10 @@ public class ProductService {
                 .toList();
     }
 
-
+    @Transactional
+    public void insert(ProductDTO productDTO) {
+        Product newProduct = ProductDTO.toEntity(productDTO);
+        productRepository.save(newProduct);
+    }
 
 }
