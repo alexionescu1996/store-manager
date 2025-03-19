@@ -1,6 +1,7 @@
 package com.example.service;
 
 import com.example.dto.ProductDTO;
+import com.example.exception.ProductNotFoundException;
 import com.example.model.Product;
 import com.example.repository.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -29,4 +30,10 @@ public class ProductService {
         productRepository.save(newProduct);
     }
 
+    @Transactional
+    public void update(ProductDTO productDTO) {
+        Product product = productRepository.findById(productDTO.id())
+                .orElseThrow(ProductNotFoundException::new);
+        product.setPrice(productDTO.price());
+    }
 }

@@ -17,15 +17,19 @@ public class StoreController {
     }
 
     @GetMapping
-    public List<ProductDTO> get() {
-        List<ProductDTO> list = productService.findAll();
+    public List<ProductDTO> getAllProducts() {
+        var list = productService.findAll();
         return list;
     }
 
     @PostMapping
-    public void add(@RequestBody ProductDTO productDTO) {
+    public void addProduct(@RequestBody ProductDTO productDTO) {
         productService.insert(productDTO);
     }
 
+    @PutMapping
+    public void updateProduct(@RequestBody ProductDTO productDTO) {
+        productService.update(productDTO);
+    }
 
 }
