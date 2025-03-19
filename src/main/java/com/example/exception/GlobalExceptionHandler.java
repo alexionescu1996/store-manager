@@ -15,4 +15,11 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.NOT_FOUND)
                 .body(Constants.PRODUCT_NOT_FOUND_MESSAGE);
     }
+
+    @ExceptionHandler(DuplicateProductException.class)
+    public ResponseEntity<String> handleDuplicateProduct() {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(Constants.DUPLICATE_PRODUCT_FOUND);
+    }
 }

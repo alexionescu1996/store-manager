@@ -22,9 +22,10 @@ public class StoreController {
     }
 
     @GetMapping
-    public List<ProductDTO> findAllProducts() {
+    public ResponseEntity<?> findAllProducts() {
         var list = productService.findAll();
-        return list;
+
+        return ResponseEntity.status(HttpStatus.OK).body(list);
     }
 
     @GetMapping("/{id}")
@@ -41,9 +42,9 @@ public class StoreController {
 
     @PutMapping("/{id}")
     public void updateProduct(@PathVariable Integer id,
-                              @RequestBody ProductDTO dto) {
+                              @RequestBody BigDecimal newPrice) {
 
-        productService.update(id, dto.price());
+        productService.update(id, newPrice);
     }
 
 }

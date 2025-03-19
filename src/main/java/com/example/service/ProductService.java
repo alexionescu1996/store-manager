@@ -1,6 +1,7 @@
 package com.example.service;
 
 import com.example.dto.ProductDTO;
+import com.example.exception.DuplicateProductException;
 import com.example.exception.ProductNotFoundException;
 import com.example.model.Product;
 import com.example.repository.ProductRepository;
@@ -34,6 +35,11 @@ public class ProductService {
 
     @Transactional
     public void insert(ProductDTO productDTO) {
+        Boolean isPresent = productRepository.existsByName(productDTO.name());
+
+        if (isPresent)
+            throw new DuplicateProductException();
+
         Product newProduct = ProductDTO.toEntity(productDTO);
         productRepository.save(newProduct);
     }
