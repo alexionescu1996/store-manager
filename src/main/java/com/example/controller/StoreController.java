@@ -31,9 +31,7 @@ public class StoreController {
     public ResponseEntity<?> findProductById(@PathVariable Integer id) {
         var product = productService.findById(id);
 
-        return product != null ?
-                new ResponseEntity<>(product, HttpStatus.OK) :
-                new ResponseEntity<>(Constants.PRODUCT_NOT_FOUND, HttpStatus.NOT_FOUND);
+        return ResponseEntity.status(HttpStatus.OK).body(product);
     }
 
     @PostMapping
@@ -44,6 +42,7 @@ public class StoreController {
     @PutMapping("/{id}")
     public void updateProduct(@PathVariable Integer id,
                               @RequestBody ProductDTO dto) {
+
         productService.update(id, dto.price());
     }
 
