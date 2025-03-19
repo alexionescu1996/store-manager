@@ -1,13 +1,18 @@
 package com.example.controller;
 
+import com.example.constants.Constants;
 import com.example.dto.ProductDTO;
 import com.example.service.ProductService;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/products")
 public class StoreController {
 
     private final ProductService productService;
@@ -17,9 +22,18 @@ public class StoreController {
     }
 
     @GetMapping
-    public List<ProductDTO> getAllProducts() {
+    public List<ProductDTO> findAllProducts() {
         var list = productService.findAll();
         return list;
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findProductById(@PathVariable Integer id) {
+        var product = productService.findById(id);
+
+        return product != null ?
+                new ResponseEntity<>(product, HttpStatus.OK) :
+                new ResponseEntity<>(Constants.PRODUCT_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
     @PostMapping
@@ -27,9 +41,10 @@ public class StoreController {
         productService.insert(productDTO);
     }
 
-    @PutMapping
-    public void updateProduct(@RequestBody ProductDTO productDTO) {
-        productService.update(productDTO);
+    @PutMapping("/{id}")
+    public void updateProduct(@PathVariable Integer id,
+                              @RequestBody ProductDTO dto) {
+        productService.update(id, dto.price());
     }
 
 }

@@ -7,6 +7,7 @@ import com.example.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -24,6 +25,13 @@ public class ProductService {
                 .toList();
     }
 
+    public ProductDTO findById(Integer id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException());
+
+        return ProductDTO.fromEntity(product);
+    }
+
     @Transactional
     public void insert(ProductDTO productDTO) {
         Product newProduct = ProductDTO.toEntity(productDTO);
@@ -31,9 +39,10 @@ public class ProductService {
     }
 
     @Transactional
-    public void update(ProductDTO productDTO) {
-        Product product = productRepository.findById(productDTO.id())
+    public void update(Integer id, BigDecimal newPrice) {
+        Product product = productRepository.findById(id)
                 .orElseThrow(ProductNotFoundException::new);
-        product.setPrice(productDTO.price());
+
+        product.setPrice(newPrice);
     }
 }
