@@ -1,15 +1,13 @@
 package com.example.controller;
 
-import com.example.constants.Constants;
 import com.example.dto.ProductDTO;
 import com.example.service.ProductService;
-import org.springframework.http.HttpEntity;
+import com.example.utils.ValidateUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @RestController
 @RequestMapping("/products")
@@ -36,15 +34,21 @@ public class StoreController {
     }
 
     @PostMapping
-    public void addProduct(@RequestBody ProductDTO productDTO) {
+    public ResponseEntity<?> addProduct(@RequestBody ProductDTO productDTO) {
+        ValidateUtil.validateInput(productDTO.price(), productDTO.name());
         productService.insert(productDTO);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping("/{id}")
-    public void updateProduct(@PathVariable Integer id,
-                              @RequestBody BigDecimal newPrice) {
+    public ResponseEntity<?> updateProduct(@PathVariable Integer id,
+                                           @RequestBody BigDecimal newPrice) {
 
+        ValidateUtil.validatePrice(newPrice);
         productService.update(id, newPrice);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
 }
