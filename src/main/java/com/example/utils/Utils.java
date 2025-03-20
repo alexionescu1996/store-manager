@@ -2,8 +2,7 @@ package com.example.utils;
 
 import java.math.BigDecimal;
 
-public class ValidateUtil {
-
+public class Utils {
 
     public static void validateId(Long id) {
         if (id == null || id <= 0) {
