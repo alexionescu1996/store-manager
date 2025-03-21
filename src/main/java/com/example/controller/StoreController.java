@@ -3,9 +3,11 @@ package com.example.controller;
 import com.example.dto.ProductDTO;
 import com.example.service.ProductService;
 import com.example.utils.Utils;
+import jdk.jfr.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +26,7 @@ public class StoreController {
         this.productService = productService;
     }
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findAllProducts() {
         var list = productService.findAll();
 
@@ -33,7 +35,7 @@ public class StoreController {
         return ResponseEntity.status(HttpStatus.OK).body(list);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findProductById(@PathVariable Integer id) {
         var product = productService.findById(id);
 
@@ -43,7 +45,7 @@ public class StoreController {
     }
 
     @PreAuthorize("hasRole('MANAGER')")
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addProduct(@RequestBody ProductDTO productDTO) {
 
         Utils.validateInput(productDTO.price(), productDTO.name());
