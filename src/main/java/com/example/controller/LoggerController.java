@@ -17,6 +17,9 @@ public class LoggerController {
     public ResponseEntity<String> update(@PathVariable String level) {
         LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();
         context.getLogger("ROOT").setLevel(Level.toLevel(level.toUpperCase()));
-        return ResponseEntity.status(HttpStatus.OK).body("log level set to " + level);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body("Log level set to " + level);
     }
 }
