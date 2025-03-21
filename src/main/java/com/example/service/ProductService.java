@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -21,7 +22,12 @@ public class ProductService {
     }
 
     public List<ProductDTO> findAll() {
-        return productRepository.findAll().stream()
+        var products = productRepository.findAll();
+
+        if (products.isEmpty())
+            return Collections.emptyList();
+
+        return products.stream()
                 .map(ProductDTO::fromEntity)
                 .toList();
     }

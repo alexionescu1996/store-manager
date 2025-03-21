@@ -29,8 +29,7 @@ public class StoreController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> findAllProducts() {
         var list = productService.findAll();
-
-        logger.info("products list size :: {}", list.size());
+        logger.info("Products list size :: {}", list.size());
 
         return ResponseEntity.status(HttpStatus.OK).body(list);
     }
@@ -39,19 +38,17 @@ public class StoreController {
     public ResponseEntity<?> findProductById(@PathVariable Integer id) {
         var product = productService.findById(id);
 
-        logger.info("findProductById :: {}", id);
+        logger.info("Product found :: {}", product.name());
 
         return ResponseEntity.status(HttpStatus.OK).body(product);
     }
 
-    @PreAuthorize("hasRole('MANAGER')")
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addProduct(@RequestBody ProductDTO productDTO) {
-
         Utils.validateInput(productDTO.price(), productDTO.name());
 
-        logger.info("adding product :: name {}, price {}", productDTO.name(), productDTO.price());
-
+        logger.info("Adding product :: name {}, price {}", productDTO.name(), productDTO.price());
         productService.insert(productDTO);
 
         return ResponseEntity
@@ -59,15 +56,14 @@ public class StoreController {
                 .build();
     }
 
-    @PreAuthorize("hasRole('MANAGER')")
-    @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateProduct(@PathVariable Integer id,
                                            @RequestBody BigDecimal newPrice) {
-
         Utils.validatePrice(newPrice);
         productService.update(id, newPrice);
 
-        logger.info("updateProduct :: id {}, newPrice {}", id, newPrice);
+        logger.info("Updating product with :: id {}, newPrice {}", id, newPrice);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
