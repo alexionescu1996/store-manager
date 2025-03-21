@@ -43,8 +43,14 @@ public class WebSecurityConfig {
                 .roles("MANAGER")
                 .build();
 
+        var admin = User.withUsername("admin")
+                .password(passwordEncoder().encode("123456"))
+                .roles("ADMIN")
+                .build();
+
         uds.createUser(storeManager);
         uds.createUser(user);
+        uds.createUser(admin);
 
         return uds;
     }
