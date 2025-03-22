@@ -23,6 +23,7 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -122,7 +123,26 @@ public class StoreControllerTest {
         verify(productService, times(1)).insert(any(ProductDTO.class));
     }
 
+    @Test
+    void test_update_product_when_success() throws Exception {
+        mvc.perform(put("/products/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(updateRequestBody))
+                .andExpect(status().isOk());
 
+        verify(productService, times(1)).update(1, BigDecimal.valueOf(70.75));
+    }
+
+    @Test
+    void test_update_product_when_invalid_price() throws Exception {
+        mvc.perform(put("/products/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("aa"))
+                .andDo(print())
+                .andExpect(status().isInternalServerError());
+    }
+
+    String updateRequestBody = "70.75";
 
     String insertRequestBody = """
             {
