@@ -1,7 +1,9 @@
 package com.example.controller;
 
 import com.example.dto.ProductDTO;
+import com.example.exception.DuplicateProductException;
 import com.example.exception.GlobalExceptionHandler;
+import com.example.exception.ProductNotFoundException;
 import com.example.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,8 +22,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -70,8 +71,7 @@ public class StoreControllerTest {
         when(productService.findAll()).thenThrow(new RuntimeException(":("));
 
         mvc.perform(get("/products"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE));
+                .andExpect(status().isInternalServerError());
 
         verify(productService, times(1)).findAll();
     }
@@ -86,8 +86,50 @@ public class StoreControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE));
 
+        verify(productService, times(1)).findById(product.id());
+    }
+
+    @Test
+    void test_findById_when_invalid() throws Exception {
+        when(productService.findById(1)).thenThrow(new ProductNotFoundException());
+
+        mvc.perform(get("/products/1"))
+                .andExpect(status().isNotFound());
+
         verify(productService, times(1)).findById(1);
     }
+
+    @Test
+    void test_addProduct_when_success() throws Exception {
+        mvc.perform(post("/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(insertRequestBody))
+                .andExpect(status().isCreated());
+
+        verify(productService, times(1)).insert(any(ProductDTO.class));
+    }
+
+    @Test
+    void test_addProduct_when_duplicate() throws Exception {
+        doThrow(new DuplicateProductException())
+                .when(productService).insert(any(ProductDTO.class));
+
+        mvc.perform(post("/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(insertRequestBody))
+                .andExpect(status().isConflict());
+
+        verify(productService, times(1)).insert(any(ProductDTO.class));
+    }
+
+
+
+    String insertRequestBody = """
+            {
+            "name": "test",
+            "price": 1231.2
+            }
+            """;
 
 
     private List<ProductDTO> productList() {

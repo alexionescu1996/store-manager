@@ -3,7 +3,6 @@ package com.example.controller;
 import com.example.dto.ProductDTO;
 import com.example.service.ProductService;
 import com.example.utils.Utils;
-import jdk.jfr.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
