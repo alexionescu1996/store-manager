@@ -156,7 +156,7 @@ public class StoreControllerTest {
         return Arrays.asList(
                 new ProductDTO(1, "test", BigDecimal.valueOf(1.2)),
                 new ProductDTO(2, "test2", BigDecimal.valueOf(5.123)),
-                new ProductDTO(2, "test3", BigDecimal.valueOf(2.512))
+                new ProductDTO(3, "test3", BigDecimal.valueOf(2.512))
         );
     }
 }
